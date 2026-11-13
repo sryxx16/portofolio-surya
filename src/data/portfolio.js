@@ -1,6 +1,6 @@
 export const portfolioData = {
   name: "SURYA DAFFA FAUZI KHOERUDIN",
-  title: "Frontend Specialist & Web Developer",
+  title: "Creative Web Developer",
   description:
     "Mahasiswa S1 Teknologi Informasi Semester 7 (UBSI) dengan spesialisasi pengembangan web modern dan arsitektur antarmuka pengguna (Frontend). Berpengalaman membangun aplikasi fullstack scalable (Next.js, React, NestJS, Laravel) dengan komitmen pada clean code, performa tinggi, dan estetika minimalis.",
   about:
@@ -214,7 +214,7 @@ export const portfolioData = {
     },
     {
       id: 4,
-      title: "SM Sport Center Reservation (FUTSAL-BNSP)",
+      title: "SM Sport — Booking Futsal & Badminton (BNSP)",
       client: "SERTIFIKASI BNSP OKUPASI ANALIS PROGRAM",
       year: "2025",
       type: "Web App - Sports Booking Platform",
@@ -238,16 +238,18 @@ export const portfolioData = {
         },
       },
       technologies: ["React.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Vite"],
-      image: "/assets/images/fotoprojects/bnsp/sm-sport-hero.jpg",
-      desktopImage: "/assets/images/fotoprojects/bnsp/sm-sport-hero.jpg",
-      mobileImage: "/assets/images/fotoprojects/bnsp/futsal_new.jpg",
+      image: "/assets/images/fotoprojects/bnsp/sm-sport-desktop.jpg",
+      desktopImage: "/assets/images/fotoprojects/bnsp/sm-sport-desktop.jpg",
+      mobileImage: "/assets/images/fotoprojects/bnsp/sm-sport-mobile.jpg",
       images: [
+        "/assets/images/fotoprojects/bnsp/sm-sport-desktop.jpg",
+        "/assets/images/fotoprojects/bnsp/sm-sport-mobile.jpg",
         "/assets/images/fotoprojects/bnsp/sm-sport-hero.jpg",
         "/assets/images/fotoprojects/bnsp/futsal_new.jpg",
         "/assets/images/fotoprojects/bnsp/badminton_new.jpg",
         "/assets/images/fotoprojects/bnsp/qris-demo.png",
       ],
-      link: null,
+      link: "https://futsal-bnsp.vercel.app/",
       github: "https://github.com/sryxx16",
     },
     {
