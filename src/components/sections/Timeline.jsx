@@ -1,104 +1,96 @@
 import React from "react";
 import { motion } from "framer-motion";
-import AnimatedText from "../animations/AnimatedText";
 
 export default function Timeline() {
-  // Data Riwayat Abang (Bisa diedit nanti)
   const experiences = [
     {
       year: "2023 - Sekarang",
-      title: "Mahasiswa IT",
+      title: "Mahasiswa S1 Teknologi Informasi (Semester 7)",
       company: "Universitas Bina Sarana Informatika (UBSI)",
       description:
-        "Berfokus pada pengembangan web dan mobile application dengan pendekatan problem solving dan clean code. Terbiasa membangun sistem CRUD, autentikasi, serta perancangan database relational menggunakan Laravel, JavaScript, dan Kotlin.",
+        "Berfokus pada pengembangan web modern dan arsitektur frontend dengan pendekatan problem solving dan clean code. Mengembangkan proyek berbasis Next.js, React, NestJS, dan database relasional.",
       icon: "bi-mortarboard-fill",
     },
     {
       year: "2025",
-      title: "3rd Place – IT Bootcamp Software Development for Industry",
+      title: "Juara 3 – IT Bootcamp Software Development for Industry",
       company: "Universitas Bina Sarana Informatika (UBSI)",
       description:
-        "Mengikuti bootcamp intensif pengembangan perangkat lunak yang berfokus pada implementasi sistem berbasis industri. Pada kegiatan ini, saya mengembangkan website Jasa Titip Jastip menggunakan Laravel dengan fitur autentikasi, manajemen produk, sistem pemesanan, dan pengelolaan database terstruktur. Project tersebut berhasil meraih Juara 3 dan memperoleh Hak Kekayaan Intelektual HKI sebagai bentuk apresiasi atas inovasi dan implementasi sistem yang dibangun..",
-      icon: "bi-shield-lock-fill",
+        "Merancang platform Jasa Titip (Jastipku) dengan fitur multi-role (Customer, Traveler, Admin) dan perancangan database terstruktur. Meraih Juara 3 dan memperoleh Sertifikat Hak Kekayaan Intelektual (HKI).",
+      icon: "bi-trophy-fill",
     },
     {
       year: "2025",
-      title: "Frontend Developer – E-Commerce Project",
+      title: "Frontend Developer – Jakarta Scooter Shop (Team Project)",
       company: "Jakarta Scooter Shop",
       description:
-        "Berkontribusi sebagai Frontend Developer dalam pengembangan website e-commerce untuk Jakarta Scooter Shop. Bertanggung jawab pada implementasi tampilan produk, sistem pagination, integrasi API, serta optimalisasi user interface agar responsif dan user-friendly. Proyek ini telah live dan digunakan secara aktif oleh client.",
+        "Mengembangkan antarmuka e-commerce berbasis Next.js dan Tailwind CSS, terintegrasi dengan backend NestJS melalui RESTful API dan state management terstruktur.",
       icon: "bi-cart-fill",
     },
     {
-      year: "2025 - 2026",
-      title: "Web Development Training – Coding Studio",
-      company: "Coding Studio & Pelatihan Lainnya",
+      year: "2024 - 2025",
+      title: "Pelatihan & Sertifikasi Profesional",
+      company: "Coding Studio & Cisco Networking Academy",
       description:
-        "Mengikuti pelatihan Web Development untuk meningkatkan pemahaman dalam pengembangan website, termasuk praktik pembuatan project menggunakan teknologi web modern.",
-      icon: "bi-laptop",
+        "Menyelesaikan sertifikasi fundamental Front-End Web di Coding Studio serta sertifikasi PCAP Python di Cisco Networking Academy guna memperkuat pondasi algoritma dan logika pemrograman.",
+      icon: "bi-award-fill",
     },
   ];
 
   return (
     <section
       id="experience"
-      className="py-24 bg-[#0a0f1d] border-t border-white/5 relative z-10"
+      className="py-24 border-t border-white/5 relative z-10 bg-transparent overflow-hidden"
     >
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
-          <h6 className="text-cyan-400 tracking-[0.2em] text-sm font-bold mb-3 flex items-center justify-center gap-2">
-            <span className="w-8 h-[2px] bg-cyan-400"></span>
-            JOURNEY
-            <span className="w-8 h-[2px] bg-cyan-400"></span>
-          </h6>
-          <div className="flex justify-center">
-            <AnimatedText
-              text="Jejak Langkah"
-              className="text-4xl md:text-5xl font-black text-white"
-            />
+      <div className="container mx-auto px-6 relative z-10 max-w-5xl">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="w-6 h-[1px] bg-neutral-600"></span>
+            <span className="text-neutral-400 tracking-[0.25em] text-xs font-bold uppercase font-mono">
+              JOURNEY & EXPERIENCE
+            </span>
+            <span className="w-6 h-[1px] bg-neutral-600"></span>
           </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+            Perjalanan & Pengalaman
+          </h2>
+          <p className="text-neutral-400 text-sm sm:text-base mt-3 max-w-xl mx-auto">
+            Rekam jejak akademis, prestasi kompetisi, dan kontribusi pengembangan perangkat lunak.
+          </p>
         </div>
 
-        {/* Garis Tengah Vertikal */}
-        <div className="relative max-w-4xl mx-auto">
-          {/* Garis neon di tengah */}
-          <div className="absolute left-[15px] md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500/50 via-blue-500/20 to-transparent -translate-x-1/2 md:translate-x-0 rounded-full"></div>
-
+        {/* Timeline Container */}
+        <div className="relative border-l border-white/10 ml-4 md:ml-32 space-y-12">
           {experiences.map((exp, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              className={`relative flex items-start justify-between mb-8 ${
-                index % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
-              } flex-row`}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="relative pl-8 md:pl-12 group"
             >
-              {/* Ruang Kosong biar selang-seling di desktop */}
-              <div className="hidden md:block w-[45%]"></div>
-
-              {/* Icon di Tengah Garis */}
-              <div className="absolute left-[15px] md:left-1/2 top-0 w-10 h-10 bg-[#0a0f1d] border-4 border-cyan-500 rounded-full flex items-center justify-center -translate-x-1/2 md:translate-x-[-50%] z-10 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-                <i className={`bi ${exp.icon} text-white text-sm`}></i>
+              {/* Bullet Node */}
+              <div className="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-[#121214] border border-white/20 flex items-center justify-center text-white text-xs group-hover:scale-110 group-hover:border-white transition-all shadow-md">
+                <i className={`bi ${exp.icon}`}></i>
               </div>
 
-              {/* Kartu Konten */}
-              <div className="w-[85%] md:w-[45%] ml-auto md:ml-0 group">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-3xl hover:border-cyan-500/50 hover:bg-white/10 transition-colors duration-300 shadow-xl">
-                  <span className="inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider rounded-full mb-4">
-                    {exp.year}
-                  </span>
-                  <h4 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-                    {exp.title}
-                  </h4>
-                  <h6 className="text-sm text-gray-400 font-semibold mb-4 flex items-center gap-2">
-                    <i className="bi bi-building"></i> {exp.company}
-                  </h6>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    {exp.description}
-                  </p>
-                </div>
+              {/* Year Stamp */}
+              <span className="text-xs font-mono font-bold tracking-wider text-neutral-400 uppercase mb-1 block">
+                {exp.year}
+              </span>
+
+              {/* Card Container */}
+              <div className="bg-[#121214] border border-white/10 hover:border-white/25 rounded-2xl p-6 transition-all duration-300">
+                <h3 className="text-lg font-bold text-white mb-1">
+                  {exp.title}
+                </h3>
+                <p className="text-xs font-mono text-neutral-400 mb-3">
+                  {exp.company}
+                </p>
+                <p className="text-neutral-400 text-sm leading-relaxed">
+                  {exp.description}
+                </p>
               </div>
             </motion.div>
           ))}

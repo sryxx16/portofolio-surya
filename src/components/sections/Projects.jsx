@@ -1,125 +1,281 @@
 import React, { useState } from "react";
 import { portfolioData } from "../../data/portfolio";
 import ProjectModal from "../ProjectModal";
-import { motion } from "framer-motion";
-import AnimatedText from "../animations/AnimatedText";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Projects() {
+  const [activeIndex, setActiveIndex] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  };
+  const projects = portfolioData.projects;
+  const activeProject = projects[activeIndex] || projects[0];
 
   return (
     <>
-      <section id="projects" className="py-24 relative overflow-hidden">
-        <div className="absolute top-1/2 left-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <section id="projects" className="py-28 relative overflow-hidden bg-transparent select-none">
+        <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+          
+          {/* HEADER SECTION */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-6 h-[1px] bg-neutral-600"></span>
+                <span className="text-neutral-400 tracking-[0.25em] text-xs font-bold uppercase font-mono">
+                  FEATURED WORK & STUDIO
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight tracking-tight">
+                Selected Works & <br className="hidden sm:inline" />
+                <span className="text-neutral-400">
+                  Real-World Engineering.
+                </span>
+              </h2>
+            </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-12">
-            <h6 className="text-cyan-400 tracking-[0.2em] text-sm font-bold mb-3 flex items-center justify-center gap-2">
-              <span className="w-8 h-[2px] bg-cyan-400"></span>
-              FEATURED WORK
-              <span className="w-8 h-[2px] bg-cyan-400"></span>
-            </h6>
-            <div className="flex justify-center">
-              <AnimatedText
-                text="Karya Pilihan"
-                className="text-4xl md:text-5xl font-black text-white"
-              />
+            <div className="text-xs font-mono text-neutral-400 self-start md:self-auto flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>{projects.length} Production & Team Projects</span>
             </div>
           </div>
 
-          {/* Grid Layout Baru: 1 kolom di mobile, 2 di tablet, 3 di desktop */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {portfolioData.projects.map((project) => (
-              <motion.div
-                key={project.id}
-                variants={cardVariants}
-                className="group relative"
-                onClick={() => setSelectedProject(project)}
-              >
-                <div className="h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden hover:border-cyan-500/50 transition-all duration-500 cursor-pointer flex flex-col shadow-xl hover:shadow-cyan-500/10">
-                  {/* Image Container */}
-                  <div className="relative h-52 overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-80"></div>
+          {/* INTERACTIVE SHOWCASE STAGE */}
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+            
+            {/* SISI KIRI: DIRECTORY LIST PROYEK */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {projects.map((project, idx) => {
+                const isActive = idx === activeIndex;
 
-                    {/* Type Badge di atas gambar */}
-                    {project.type && (
-                      <div className="absolute top-4 left-4">
-                        <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest bg-[#0a0f1d]/80 backdrop-blur-md border border-cyan-500/20 px-3 py-1 rounded-full">
-                          {project.type}
-                        </span>
-                      </div>
+                return (
+                  <div
+                    key={project.id}
+                    onClick={() => setActiveIndex(idx)}
+                    className={`p-5 sm:p-6 rounded-2xl cursor-pointer transition-all duration-300 border text-left relative ${
+                      isActive
+                        ? "bg-[#18181b] border-white/25 shadow-[0_10px_35px_rgba(0,0,0,0.7)]"
+                        : "bg-[#121214]/60 border-white/5 hover:border-white/15 hover:bg-[#18181b]/50"
+                    }`}
+                  >
+                    {/* Active Indicator Bar */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeProjectIndicator"
+                        className="absolute left-0 top-3 bottom-3 w-1 bg-white rounded-r-full"
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
                     )}
-                  </div>
 
-                  {/* Content Container */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h5 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-mono font-bold tracking-widest text-neutral-400 uppercase">
+                        0{idx + 1} • {project.type}
+                      </span>
+                      <span className="text-[10px] font-mono text-neutral-500">
+                        {project.year || "2025"}
+                      </span>
+                    </div>
+
+                    <h3 className={`text-lg sm:text-xl font-bold tracking-tight mb-1.5 transition-colors ${
+                      isActive ? "text-white" : "text-neutral-300"
+                    }`}>
                       {project.title}
-                    </h5>
+                    </h3>
 
-                    <p className="text-gray-400 text-sm line-clamp-3 mb-6 flex-grow">
+                    <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed font-normal">
                       {project.description}
                     </p>
 
-                    {/* Tech Stack */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.technologies
-                        ?.slice(0, 3)
-                        .map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="text-[9px] font-medium bg-cyan-500/5 border border-cyan-500/10 text-cyan-300/80 px-2 py-0.5 rounded uppercase"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      {project.technologies?.length > 3 && (
-                        <span className="text-[9px] text-gray-500">
-                          +{project.technologies.length - 3}
+                    {/* Quick tech preview */}
+                    <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-white/5">
+                      {project.technologies?.slice(0, 4).map((tech, i) => (
+                        <span
+                          key={i}
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                            isActive
+                              ? "bg-white/10 text-neutral-200"
+                              : "bg-white/[0.03] text-neutral-500"
+                          }`}
+                        >
+                          {tech}
                         </span>
-                      )}
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* SISI KANAN: DUAL DEVICE MOCKUP STAGE (LAPTOP MACBOOK + SMARTPHONE PHONE) */}
+            <div className="lg:col-span-7 sticky top-28">
+              <div className="bg-[#121214] border border-white/15 rounded-[2.5rem] p-6 sm:p-8 overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.85)] relative">
+                
+                {/* AMBIENT SPOTLIGHT BEHIND MOCKUP */}
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[450px] h-[350px] sm:h-[450px] bg-white/[0.05] rounded-full blur-[90px] pointer-events-none" />
+
+                {/* DUAL DEVICE CONTAINER */}
+                <div
+                  className="relative w-full pt-4 pb-8 flex items-center justify-center cursor-pointer group"
+                  onClick={() => setSelectedProject(activeProject)}
+                >
+                  
+                  {/* 1. THE MACBOOK LAPTOP MOCKUP */}
+                  <div className="relative w-[90%] sm:w-[86%] transition-transform duration-500 group-hover:scale-[1.02]">
+                    {/* Screen Frame */}
+                    <div className="bg-[#1b1b1e] p-2.5 sm:p-3 rounded-t-2xl sm:rounded-t-3xl border border-white/20 shadow-2xl">
+                      {/* Webcam Dot */}
+                      <div className="w-2 h-2 rounded-full bg-neutral-900 border border-white/10 mx-auto mb-2"></div>
+                      
+                      {/* Screen Content */}
+                      <div className="relative aspect-[16/10] w-full bg-black rounded-lg sm:rounded-xl overflow-hidden">
+                        <AnimatePresence mode="wait">
+                          <motion.img
+                            key={`desktop-${activeProject.id}`}
+                            initial={{ opacity: 0, scale: 1.02 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            src={activeProject.desktopImage || activeProject.image}
+                            alt={`${activeProject.title} Desktop`}
+                            className="w-full h-full object-cover object-top filter brightness-[97%]"
+                          />
+                        </AnimatePresence>
+                        {/* Screen Glare Highlight */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.03] to-transparent pointer-events-none"></div>
+                      </div>
                     </div>
 
-                    <button className="w-full py-3 bg-white/5 border border-white/10 hover:bg-cyan-500 hover:text-gray-900 hover:border-cyan-500 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn">
-                      DETAIL PROJECT
-                      <i className="bi bi-arrow-up-right group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"></i>
-                    </button>
+                    {/* Laptop Aluminum Base & Notch */}
+                    <div className="relative bg-[#29292d] h-3.5 sm:h-4 w-[106%] -ml-[3%] rounded-b-xl border-t border-white/20 shadow-[0_15px_30px_rgba(0,0,0,0.9)] flex items-center justify-center">
+                      <div className="w-14 sm:w-16 h-1 rounded-b-md bg-[#18181b]"></div>
+                    </div>
                   </div>
+
+                  {/* 2. THE SMARTPHONE / IPHONE MOCKUP (FLOATING DI KANAN BAWAH) */}
+                  <div className="absolute -bottom-1 sm:bottom-1 right-1 sm:right-3 w-[26%] sm:w-[24%] max-w-[150px] z-20 transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-1">
+                    <div className="bg-[#18181b] p-1.5 sm:p-2 rounded-[1.8rem] sm:rounded-[2.2rem] border-[3px] border-neutral-700 shadow-[0_20px_45px_rgba(0,0,0,0.95)]">
+                      {/* Dynamic Island / Speaker Pill */}
+                      <div className="w-8 sm:w-10 h-2 bg-black rounded-full mx-auto mb-1 flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 ml-auto mr-1.5"></div>
+                      </div>
+
+                      {/* Phone Screen Content */}
+                      <div className="relative aspect-[9/19] w-full bg-black rounded-[1.3rem] sm:rounded-[1.6rem] overflow-hidden">
+                        <AnimatePresence mode="wait">
+                          <motion.img
+                            key={`mobile-${activeProject.id}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            src={activeProject.mobileImage || activeProject.image}
+                            alt={`${activeProject.title} Mobile`}
+                            className="w-full h-full object-cover object-top filter brightness-[98%]"
+                          />
+                        </AnimatePresence>
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] to-transparent pointer-events-none"></div>
+                      </div>
+
+                      {/* Home Indicator Bar */}
+                      <div className="w-10 sm:w-12 h-1 bg-white/20 rounded-full mx-auto mt-1.5"></div>
+                    </div>
+                  </div>
+
+                  {/* Hover Hint */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px] rounded-3xl pointer-events-none z-30">
+                    <span className="px-5 py-2.5 rounded-full bg-white text-black text-xs font-mono font-bold tracking-wide shadow-xl flex items-center gap-2">
+                      <i className="bi bi-arrows-fullscreen"></i>
+                      <span>Buka Detail Kasus Lengkap</span>
+                    </span>
+                  </div>
+
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
+
+                {/* SPECS & DETAILS AREA */}
+                <div className="pt-4 border-t border-white/10 flex flex-col justify-between">
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-neutral-400">
+                      CLIENT — {activeProject.client}
+                    </span>
+                    <span className="text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      VERIFIED PRODUCTION
+                    </span>
+                  </div>
+
+                  <h4 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">
+                    {activeProject.title}
+                  </h4>
+
+                  <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-4">
+                    {activeProject.description}
+                  </p>
+
+                  {/* Metric Highlight */}
+                  {activeProject.metrics && (
+                    <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-mono text-neutral-300 flex items-start gap-2.5 mb-5">
+                      <i className="bi bi-stars text-white mt-0.5"></i>
+                      <span>{activeProject.metrics}</span>
+                    </div>
+                  )}
+
+                  {/* All Tech Pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-6">
+                    {activeProject.technologies?.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-1 rounded-md bg-white/[0.06] border border-white/10 text-[11px] font-mono text-neutral-200"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setSelectedProject(activeProject)}
+                      className="flex-1 py-3 px-5 rounded-xl bg-white hover:bg-neutral-200 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <span>Lihat Case Study</span>
+                      <i className="bi bi-arrow-right"></i>
+                    </button>
+
+                    {activeProject.link && (
+                      <a
+                        href={activeProject.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-3 px-5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 hover:border-white/30 text-white font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2"
+                        title="Live Site"
+                      >
+                        <i className="bi bi-box-arrow-up-right text-xs"></i>
+                        <span>Live Site</span>
+                      </a>
+                    )}
+
+                    {activeProject.github && (
+                      <a
+                        href={activeProject.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-11 h-11 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 hover:border-white/30 text-white flex items-center justify-center transition-all flex-shrink-0"
+                        title="GitHub Repository"
+                      >
+                        <i className="bi bi-github text-base"></i>
+                      </a>
+                    )}
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
+      {/* Modal Detail Project */}
       {selectedProject && (
         <ProjectModal
           project={selectedProject}

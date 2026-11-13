@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function ProjectModal({ project, onClose }) {
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
-  const images = project.images || [project.image];
+  const images = project.images || [
+    project.desktopImage || project.image,
+    project.mobileImage,
+  ].filter(Boolean);
 
   // Mengunci scroll body saat modal terbuka
   useEffect(() => {
@@ -27,36 +30,40 @@ export default function ProjectModal({ project, onClose }) {
   return (
     <AnimatePresence>
       <div
-        className="fixed inset-0 bg-[#0a0f1d]/90 backdrop-blur-md flex items-center justify-center z-[100] p-4 md:p-10"
+        className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-[110] p-4 md:p-8"
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative bg-[#0d1326]/90 border border-white/10 rounded-[2rem] w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col shadow-2xl"
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          transition={{ duration: 0.25 }}
+          className="relative bg-[#121214] border border-white/10 rounded-[2rem] w-full max-w-5xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Tombol Close Modal Utama */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white text-2xl hover:text-cyan-400 transition-colors z-[60] bg-[#0a0f1d]/50 rounded-full w-12 h-12 flex items-center justify-center border border-white/10"
+            className="absolute top-4 right-4 text-neutral-400 hover:text-white transition-colors z-[60] bg-black/60 hover:bg-black/90 rounded-full w-11 h-11 flex items-center justify-center border border-white/10 text-xl font-mono"
+            aria-label="Close modal"
           >
             ✕
           </button>
 
-          {/* Area Gambar (Bisa Diklik untuk Zoom) */}
-          <div className="relative w-full h-[40vh] md:h-[50vh] bg-black overflow-hidden flex-shrink-0 group">
+          {/* Area Gambar Hero Modal */}
+          <div className="relative w-full h-[38vh] md:h-[48vh] bg-black overflow-hidden flex-shrink-0 group">
             <img
               src={images[currentImageIdx]}
-              className="w-full h-full object-cover cursor-zoom-in transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover object-top cursor-zoom-in transition-transform duration-500 group-hover:scale-105"
               alt={project.title}
               onClick={() => setIsZoomed(true)}
             />
 
+            <div className="absolute inset-0 bg-gradient-to-t from-[#121214] via-transparent to-black/30 pointer-events-none"></div>
+
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              <span className="bg-black/60 text-white px-4 py-2 rounded-full text-xs backdrop-blur-md border border-white/20">
-                <i className="bi bi-search"></i> Klik untuk lihat detail
+              <span className="bg-black/80 text-white px-4 py-2 rounded-full text-xs font-mono backdrop-blur-md border border-white/20">
+                <i className="bi bi-arrows-fullscreen mr-1.5"></i> Klik untuk perbesar gambar
               </span>
             </div>
 
@@ -64,36 +71,48 @@ export default function ProjectModal({ project, onClose }) {
               <>
                 <button
                   onClick={handlePrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-cyan-500 transition-colors z-20"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 p-3 rounded-full text-white hover:bg-white hover:text-black transition-colors z-20 border border-white/10 text-lg w-10 h-10 flex items-center justify-center font-bold"
                 >
                   ‹
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-cyan-500 transition-colors z-20"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 p-3 rounded-full text-white hover:bg-white hover:text-black transition-colors z-20 border border-white/10 text-lg w-10 h-10 flex items-center justify-center font-bold"
                 >
                   ›
                 </button>
+                <div className="absolute bottom-4 left-4 z-20">
+                  <span className="bg-black/80 text-neutral-300 font-mono text-xs px-3 py-1 rounded-full border border-white/10">
+                    {currentImageIdx + 1} / {images.length}
+                  </span>
+                </div>
               </>
             )}
           </div>
 
-          {/* Area Info Project */}
-          <div className="p-8 md:p-10 overflow-y-auto">
-            <div className="flex flex-col md:flex-row gap-10">
+          {/* Area Konten & Penjelasan */}
+          <div className="p-6 md:p-10 overflow-y-auto">
+            <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
+              
               <div className="flex-grow">
-                <h3 className="text-3xl font-black text-white mb-4">
+                <div className="flex items-center gap-2 mb-2 font-mono text-xs uppercase tracking-widest text-neutral-400">
+                  <span>{project.type || "Web App"}</span>
+                  <span>•</span>
+                  <span>{project.year || "2025"}</span>
+                </div>
+
+                <h3 className="text-2xl md:text-4xl font-black text-white mb-4 tracking-tight">
                   {project.title}
                 </h3>
 
                 {project.detailedDescription?.achievement && (
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 mb-6 flex items-center gap-3">
-                    <span className="text-2xl">🏆</span>
+                  <div className="bg-white/[0.04] border border-white/15 rounded-xl p-4 mb-6 flex items-start gap-3">
+                    <span className="text-xl">🏆</span>
                     <div>
-                      <p className="text-yellow-500 font-bold text-sm uppercase tracking-wider">
-                        Achievement
+                      <p className="text-white font-bold text-xs uppercase tracking-wider font-mono">
+                        Pencapaian Kompetisi
                       </p>
-                      <p className="text-white text-sm">
+                      <p className="text-neutral-300 text-sm mt-0.5">
                         {project.detailedDescription.achievement}
                       </p>
                     </div>
@@ -103,25 +122,26 @@ export default function ProjectModal({ project, onClose }) {
                 {project.detailedDescription ? (
                   <div className="space-y-6">
                     <div>
-                      <h4 className="text-cyan-400 font-bold text-xs uppercase tracking-widest mb-2">
-                        Project Overview
+                      <h4 className="text-neutral-400 font-mono text-xs uppercase tracking-widest mb-2 font-bold">
+                        Overview Arsitektur
                       </h4>
-                      <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+                      <p className="text-neutral-300 leading-relaxed text-sm md:text-base">
                         {project.detailedDescription.overview}
                       </p>
                     </div>
                     <div>
-                      <h4 className="text-cyan-400 font-bold text-xs uppercase tracking-widest mb-2">
-                        My Responsibilities
+                      <h4 className="text-neutral-400 font-mono text-xs uppercase tracking-widest mb-2 font-bold">
+                        Tanggung Jawab Teknis
                       </h4>
                       <ul className="space-y-2">
                         {project.detailedDescription.responsibilities.map(
                           (r, i) => (
                             <li
                               key={i}
-                              className="text-gray-400 text-sm flex gap-2"
+                              className="text-neutral-300 text-sm flex gap-2.5 items-start"
                             >
-                              <span className="text-cyan-500">▹</span> {r}
+                              <span className="text-neutral-500 font-mono">▹</span>
+                              <span>{r}</span>
                             </li>
                           ),
                         )}
@@ -129,29 +149,30 @@ export default function ProjectModal({ project, onClose }) {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-neutral-300 leading-relaxed">
                     {project.description}
                   </p>
                 )}
               </div>
 
+              {/* Sidebar Tech Stack */}
               {project.detailedDescription && (
-                <div className="w-full md:w-72 space-y-6 bg-white/5 p-6 rounded-2xl border border-white/10 h-fit">
-                  <h4 className="text-white font-bold text-xs uppercase mb-4 border-b border-white/10 pb-2">
-                    Tech Stack
+                <div className="w-full md:w-80 space-y-5 bg-white/[0.03] p-6 rounded-2xl border border-white/10 h-fit">
+                  <h4 className="text-white font-mono font-bold text-xs uppercase tracking-wider border-b border-white/10 pb-3">
+                    Tech Stack Stack
                   </h4>
                   <div className="space-y-4">
                     {Object.entries(project.detailedDescription.techStack).map(
                       ([key, techs]) => (
                         <div key={key}>
-                          <p className="text-[10px] text-gray-500 uppercase font-bold mb-2">
+                          <p className="text-[10px] text-neutral-400 uppercase font-mono font-bold mb-2">
                             {key.replace("_", " ")}
                           </p>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1.5">
                             {techs.map((t) => (
                               <span
                                 key={t}
-                                className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded border border-cyan-500/20"
+                                className="text-[11px] font-mono bg-white/[0.06] text-neutral-200 px-2.5 py-1 rounded-md border border-white/10"
                               >
                                 {t}
                               </span>
@@ -163,17 +184,20 @@ export default function ProjectModal({ project, onClose }) {
                   </div>
                 </div>
               )}
+
             </div>
 
-            <div className="flex gap-4 mt-10">
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-3.5 mt-8 pt-6 border-t border-white/10">
               {project.link && (
                 <a
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-cyan-500 text-gray-900 px-8 py-3 rounded-xl font-bold hover:bg-cyan-400 transition-all"
+                  className="bg-white text-black px-7 py-3 rounded-xl font-bold font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-all flex items-center gap-2"
                 >
-                  Kunjungi Website
+                  <span>Kunjungi Live Site</span>
+                  <i className="bi bi-box-arrow-up-right text-xs"></i>
                 </a>
               )}
               {project.github && (
@@ -181,9 +205,10 @@ export default function ProjectModal({ project, onClose }) {
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/10 text-white px-8 py-3 rounded-xl border border-white/10 hover:bg-white/20 transition-all"
+                  className="bg-white/[0.05] text-white px-7 py-3 rounded-xl border border-white/15 hover:border-white/30 hover:bg-white/[0.1] font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2"
                 >
-                  GitHub
+                  <i className="bi bi-github text-sm"></i>
+                  <span>GitHub Repository</span>
                 </a>
               )}
             </div>
@@ -191,75 +216,56 @@ export default function ProjectModal({ project, onClose }) {
         </motion.div>
       </div>
 
-      {/* OVERLAY ZOOM (Lightbox) - DITAMBAHKAN NAVIGASI */}
+      {/* OVERLAY ZOOM (Lightbox) */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] bg-black/95 flex flex-col items-center justify-center p-4"
+            className="fixed inset-0 z-[1200] bg-black/95 flex flex-col items-center justify-center p-4"
             onClick={() => setIsZoomed(false)}
           >
             {/* Tombol Close Zoom */}
-            <motion.button
-              className="absolute top-6 right-6 text-white text-3xl hover:text-cyan-400 z-[1010] bg-white/10 rounded-full w-14 h-14 flex items-center justify-center border border-white/20"
+            <button
+              className="absolute top-6 right-6 text-white text-2xl z-[1210] bg-white/10 hover:bg-white/20 rounded-full w-12 h-12 flex items-center justify-center border border-white/20 font-mono transition-colors"
               onClick={() => setIsZoomed(false)}
             >
               ✕
-            </motion.button>
+            </button>
 
-            {/* Navigasi Tombol (Kiri) */}
             {images.length > 1 && (
               <button
                 onClick={handlePrev}
-                className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-cyan-400 text-5xl transition-colors z-[1010] p-4"
+                className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-5xl transition-colors z-[1210] p-4"
               >
                 ‹
               </button>
             )}
 
-            {/* Container Gambar dengan Fitur Drag/Geser */}
             <motion.div
-              className="relative w-full max-w-5xl h-[80vh] flex items-center justify-center"
+              className="relative w-full max-w-5xl h-[82vh] flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <motion.img
-                key={currentImageIdx} // Supaya ada animasi saat ganti gambar
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                drag="x" // Mengaktifkan fitur geser horizontal
-                dragConstraints={{ left: 0, right: 0 }}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = offset.x;
-                  if (swipe < -100) handleNext(e);
-                  else if (swipe > 100) handlePrev(e);
-                }}
+              <img
                 src={images[currentImageIdx]}
                 alt="Zoomed Detail"
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl cursor-grab active:cursor-grabbing"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               />
             </motion.div>
 
-            {/* Navigasi Tombol (Kanan) */}
             {images.length > 1 && (
               <button
                 onClick={handleNext}
-                className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-cyan-400 text-5xl transition-colors z-[1010] p-4"
+                className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-5xl transition-colors z-[1210] p-4"
               >
                 ›
               </button>
             )}
 
-            {/* Indikator Angka */}
-            <div className="mt-4 text-gray-500 font-medium tracking-widest bg-white/5 px-4 py-1 rounded-full border border-white/10">
+            <div className="mt-4 text-neutral-400 font-mono text-xs tracking-widest bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
               {currentImageIdx + 1} / {images.length}
             </div>
-
-            <p className="mt-4 text-gray-500 text-xs tracking-widest uppercase">
-              Geser gambar atau gunakan tombol untuk navigasi
-            </p>
           </motion.div>
         )}
       </AnimatePresence>

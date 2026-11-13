@@ -1,228 +1,224 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { portfolioData } from "../../data/portfolio";
-import TiltCard from "../animations/TiltCard";
-import AnimatedText from "../animations/AnimatedText";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function Hero() {
-  const roles = [
-    "Web Developer",
-    "frontend developer",
-    "backend developer",
-    "fullstack developer",
+  const trackRef = useRef(null);
+
+  // Scroll Progress di track 190vh
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end start"],
+  });
+
+  // 1. 3D Stage Transformations (Tilting & Scaling the entire Hero)
+  const stageScale = useTransform(scrollYProgress, [0, 0.7], [1, 0.88]);
+  const stageRotateX = useTransform(scrollYProgress, [0, 0.7], [0, 9]);
+  const stageY = useTransform(scrollYProgress, [0, 0.7], ["0%", "8%"]);
+  const stageOpacity = useTransform(scrollYProgress, [0.4, 0.75], [1, 0.15]);
+
+  // 2. Character 3D Depth (Karakter Surya melangkah maju di ruang 3D)
+  const charScale = useTransform(scrollYProgress, [0, 0.55], [1.15, 1.38]);
+  const charY = useTransform(scrollYProgress, [0, 0.55], [0, -35]);
+
+  // 3. Background Text 3D Parallax (Mundur ke belakang dan memudar)
+  const textScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.9]);
+  const textY = useTransform(scrollYProgress, [0, 0.6], ["0%", "-30%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.45], [0.06, 0]);
+
+  // 4. Side Columns Fade Out (Kiri meluncur ke kiri, Kanan meluncur ke kanan)
+  const leftX = useTransform(scrollYProgress, [0, 0.45], [0, -80]);
+  const leftOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+
+  const rightX = useTransform(scrollYProgress, [0, 0.45], [0, 80]);
+  const rightOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+
+  // 5. Bottom Ticker Fade Out
+  const bottomY = useTransform(scrollYProgress, [0, 0.35], [0, 30]);
+  const bottomOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+
+  const highlights = [
+    { num: "01", title: "Frontend Architecture", desc: "Next.js 15, React 19 & TypeScript" },
+    { num: "02", title: "Fullstack & Microservices", desc: "NestJS, Prisma ORM & PostgreSQL" },
+    { num: "03", title: "Performant UI/UX", desc: "Tailwind CSS & Clean Motion" },
   ];
 
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentRoleIndex((prevIndex) => (prevIndex + 1) % roles.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [roles.length]);
-
   return (
-    <section
-      id="home"
-      className="min-h-screen flex items-center bg-transparent pt-20 pb-10 overflow-hidden relative"
-    >
-      <div className="container mx-auto px-6 relative z-10">
-        {/* REVISI: Menggunakan justify-center dengan gap sedang agar pas di tengah */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-16 lg:gap-24">
+    <div id="home" ref={trackRef} className="relative h-[190vh] bg-[#09090b]">
+      {/* STICKY 3D VIEWPORT */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-20 sm:pt-22 pb-4 sm:pb-6 px-6 [perspective:1400px]">
+        
+        {/* 3D STAGE CONTAINER */}
+        <motion.div
+          style={{
+            scale: stageScale,
+            rotateX: stageRotateX,
+            y: stageY,
+            opacity: stageOpacity,
+            transformStyle: "preserve-3d",
+          }}
+          className="relative w-full h-full flex flex-col justify-between select-none origin-bottom"
+        >
+          {/* 1. CINEMATIC MONOCHROME SPOTLIGHT */}
+          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[750px] h-[550px] sm:h-[750px] bg-white/[0.07] rounded-full blur-[130px] pointer-events-none" />
 
-          {/* BAGIAN KIRI: TEKS & TOMBOL */}
-          <div className="w-full md:w-6/12" data-aos="fade-right">
-            <div className="bg-[#020617]/80 backdrop-blur-lg border border-white/10 p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-              <div className="absolute -top-24 -left-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-[80px] group-hover:bg-cyan-500/30 transition-colors"></div>
+          {/* 2. MASSIVE STACKED TYPOGRAPHY BEHIND (3D PARALLAX) */}
+          <motion.div
+            style={{ y: textY, scale: textScale, opacity: textOpacity }}
+            className="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-0 flex flex-col items-center justify-center"
+          >
+            <span className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] xl:text-[15rem] font-black tracking-tighter uppercase text-white leading-[0.8] select-none">
+              SURYA
+            </span>
+            <span className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] xl:text-[15rem] font-black tracking-tighter uppercase text-white leading-[0.8] select-none">
+              DAFFA
+            </span>
+          </motion.div>
 
-              <div className="relative z-10">
-                <h6 className="text-cyan-400 font-bold tracking-[0.2em] mb-4 flex items-center gap-2 text-xs md:text-sm">
-                  <span className="w-8 h-[2px] bg-cyan-400"></span>
-                  HELLO, I'M
-                </h6>
-
-                <AnimatedText
-                  text={portfolioData.name.toUpperCase()}
-                  className="text-3xl md:text-6xl font-black text-white mb-6 leading-tight"
-                />
-
-                <div className="flex items-center gap-3 mb-8 h-8 md:h-10">
-                  <span className="text-gray-400 font-mono text-sm md:text-base">
-                    Specialized in:
+          {/* 3. MAIN HERO CONTENT GRID (FIT 100% IN SCREEN AT SCROLL = 0) */}
+          <div className="container mx-auto max-w-7xl relative z-10 flex-grow flex items-end my-auto">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-12 items-end gap-6 pt-2 pb-1">
+              
+              {/* KOLOM KIRI: HEADLINE & TOMBOL LENGKAP */}
+              <motion.div
+                style={{ x: leftX, opacity: leftOpacity }}
+                className="lg:col-span-4 flex flex-col items-start z-20 pb-2 lg:pb-6"
+              >
+                {/* Status Pill */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 backdrop-blur-md mb-3.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-[11px] font-mono font-medium tracking-wider text-neutral-300 uppercase">
+                    Hey, I'm Surya
                   </span>
-                  <div className="relative overflow-hidden flex items-center h-full min-w-[200px]">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentRoleIndex}
-                        initial={{ y: 25, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -25, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                        className="text-cyan-400 font-mono text-sm md:text-base font-bold whitespace-nowrap absolute"
-                      >
-                        {roles[currentRoleIndex]}
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
                 </div>
 
-                <AnimatedText
-                  text={portfolioData.description}
-                  className="text-gray-400 text-base md:text-lg leading-relaxed mb-8 max-w-xl"
-                />
+                {/* Bold Headline */}
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.05] mb-3">
+                  Frontend <br />
+                  <span className="text-neutral-400">Specialist.</span>
+                </h1>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0, duration: 0.5 }}
-                  className="flex items-center gap-4 mb-8"
-                >
+                {/* Description */}
+                <p className="text-neutral-400 text-xs sm:text-sm leading-relaxed mb-5 max-w-xs sm:max-w-sm font-normal">
+                  Mahasiswa S1 TI Semester 7 (UBSI) yang berfokus membangun antarmuka web modern, scalable, dan berperforma tinggi dengan Next.js & TypeScript.
+                </p>
+
+                {/* CTA Buttons (100% Full Terlihat Jelas) */}
+                <div className="flex items-center gap-3">
                   <a
-                    href={portfolioData.contacts?.github || "#"}
+                    href="#projects"
+                    className="px-5 py-3 rounded-full bg-white hover:bg-neutral-200 text-black font-mono font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center gap-2 shadow-lg group"
+                  >
+                    <span>Lihat Karya</span>
+                    <i className="bi bi-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-xs"></i>
+                  </a>
+
+                  <a
+                    href="#about"
+                    className="px-4 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/15 text-white font-mono text-xs font-semibold transition-all"
+                  >
+                    Tentang Saya
+                  </a>
+                </div>
+              </motion.div>
+
+              {/* KOLOM TENGAH: KARAKTER BESAR 3D POP FORWARD (NO BOX, NO CARD) */}
+              <div className="lg:col-span-4 flex justify-center items-end relative z-10">
+                <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] h-[400px] sm:h-[480px] lg:h-[530px] flex items-end justify-center">
+                  
+                  {/* Halo Ambient */}
+                  <div className="absolute top-[18%] left-1/2 -translate-x-1/2 w-48 sm:w-64 h-48 sm:h-64 bg-white/[0.1] rounded-full blur-[70px] pointer-events-none" />
+
+                  {/* Surya Cutout dengan 3D Parallax Pop */}
+                  <motion.img
+                    style={{ scale: charScale, y: charY }}
+                    src={portfolioData.profileImage1}
+                    alt={portfolioData.name}
+                    className="w-full h-full object-contain object-bottom origin-bottom filter brightness-[100%] contrast-[104%] pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
+                  />
+                </div>
+              </div>
+
+              {/* KOLOM KANAN: SECONDARY NARRATIVE & SOCIAL */}
+              <motion.div
+                style={{ x: rightX, opacity: rightOpacity }}
+                className="lg:col-span-4 flex flex-col items-start lg:items-end text-left lg:text-right z-20 pb-2 lg:pb-6"
+              >
+                <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight mb-2">
+                  Capturing Performance. <br />
+                  <span className="text-neutral-400">Architecting Modern Web.</span>
+                </h2>
+
+                <p className="text-neutral-400 text-xs leading-relaxed mb-5 max-w-xs sm:max-w-sm font-normal">
+                  Dari pemodelan database relasional PostgreSQL & NestJS, hingga pengalaman pengguna interaktif di Next.js & React 19.
+                </p>
+
+                {/* Social Icons Round */}
+                <div className="flex items-center gap-2 mb-4">
+                  <a
+                    href={portfolioData.contacts?.github || "https://github.com/sryxx16"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-all"
+                    aria-label="GitHub"
+                    className="w-9 h-9 rounded-full bg-white/[0.04] hover:bg-white text-neutral-400 hover:text-black border border-white/10 hover:border-white flex items-center justify-center transition-all duration-200"
                   >
-                    <i className="bi bi-github text-lg md:text-xl"></i>
+                    <i className="bi bi-github text-sm"></i>
                   </a>
                   <a
                     href={portfolioData.contacts?.linkedin || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0077b5] transition-all"
+                    aria-label="LinkedIn"
+                    className="w-9 h-9 rounded-full bg-white/[0.04] hover:bg-white text-neutral-400 hover:text-black border border-white/10 hover:border-white flex items-center justify-center transition-all duration-200"
                   >
-                    <i className="bi bi-linkedin text-lg md:text-xl"></i>
+                    <i className="bi bi-linkedin text-sm"></i>
                   </a>
                   <a
                     href={portfolioData.contacts?.instagram || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:to-[#bc1888] transition-all"
+                    aria-label="Instagram"
+                    className="w-9 h-9 rounded-full bg-white/[0.04] hover:bg-white text-neutral-400 hover:text-black border border-white/10 hover:border-white flex items-center justify-center transition-all duration-200"
                   >
-                    <i className="bi bi-instagram text-lg md:text-xl"></i>
+                    <i className="bi bi-instagram text-sm"></i>
                   </a>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.2, duration: 0.5 }}
-                  className="flex flex-col sm:flex-row gap-4 md:gap-5"
-                >
-                  <a
-                    href="#projects"
-                    className="px-6 md:px-8 py-3 md:py-4 bg-cyan-500 hover:bg-cyan-400 text-gray-900 rounded-xl md:rounded-2xl font-bold transition-all shadow-lg text-center flex items-center justify-center gap-2 group/btn"
-                  >
-                    Lihat Karya{" "}
-                    <i className="bi bi-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
-                  </a>
-                  <a
-                    href="#contact"
-                    className="px-6 md:px-8 py-3 md:py-4 border-2 border-white/10 text-white rounded-xl md:rounded-2xl font-bold hover:bg-white/5 transition-all text-center"
-                  >
-                    Kontak Saya
-                  </a>
-                </motion.div>
-              </div>
+                <div className="text-[11px] font-mono text-neutral-500 flex items-center gap-1.5">
+                  <i className="bi bi-geo-alt-fill text-neutral-400"></i>
+                  <span>Bogor & Jakarta, Indonesia</span>
+                </div>
+              </motion.div>
+
             </div>
           </div>
 
-          {/* BAGIAN KANAN: LANYARD (MODIFIED TO FULL CARD PHOTO) */}
-          {/* REVISI: Kembali pakai justify-center agar mengikuti gap dari parent */}
-          <div
-            className="w-full md:w-5/12 flex justify-center mt-8 md:mt-0"
-            data-aos="fade-left"
+          {/* 4. BOTTOM TICKER HIGHLIGHTS (100% TERLIHAT DI LAYAR AT SCROLL = 0) */}
+          <motion.div
+            style={{ y: bottomY, opacity: bottomOpacity }}
+            className="container mx-auto max-w-7xl relative z-20 pt-4 border-t border-white/10 mt-auto"
           >
-            <div className="relative group flex justify-center w-full max-w-sm">
-              <div className="hidden sm:block absolute -top-32 left-1/2 -translate-x-1/2 w-[3px] h-32 bg-gradient-to-b from-transparent via-cyan-500/50 to-cyan-500 z-0"></div>
-
-              <div className="absolute inset-0 bg-cyan-500 rounded-2xl blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
-
-              <div className="relative w-64 md:w-80 h-[400px] md:h-[450px] perspective-1000 z-10 pt-2">
-                <TiltCard>
-                  <div className="w-full h-full bg-[#020617] rounded-2xl border border-white/20 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden">
-                    {/* FOTO FULL CARD SEBAGAI BACKGROUND */}
-                    <div className="absolute inset-0 z-0">
-                      <img
-                        src={portfolioData.profileImage1}
-                        alt={portfolioData.name}
-                        className="w-full h-full object-cover object-top opacity-60 group-hover:scale-110 transition-transform duration-700"
-                      />
-                      {/* Gradient Overlay agar teks tetap terbaca */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent"></div>
-                    </div>
-
-                    {/* Konten Atas Kad */}
-                    <div className="w-full flex justify-between items-start z-10 p-4 md:p-5 mb-4">
-                      <span className="text-[8px] md:text-[10px] font-black text-white/70 tracking-[0.2em] uppercase">
-                        ACCESS LEVEL:{" "}
-                        <span className="text-cyan-400">ADMIN</span>
-                      </span>
-                      <i className="bi bi-qr-code text-white/60 text-xl md:text-2xl"></i>
-                    </div>
-
-                    {/* Spacer untuk menolak teks ke bawah karena foto sudah full background */}
-                    <div className="flex-grow"></div>
-
-                    {/* Konten Bawah Kad */}
-                    <div className="w-full text-center z-10 p-4 md:p-5 pb-6">
-                      <h2 className="text-xl md:text-2xl font-black text-white tracking-widest uppercase mb-1 drop-shadow-lg">
-                        SURYA
-                      </h2>
-                      <p className="text-cyan-400 text-[10px] md:text-xs font-bold tracking-[0.15em] mb-4">
-                        FULLSTACK DEVELOPER
-                      </p>
-
-                      <div className="w-full h-6 bg-white/5 border-y border-white/10 flex items-center justify-center gap-1 overflow-hidden backdrop-blur-sm">
-                        {[...Array(20)].map((_, i) => (
-                          <div
-                            key={i}
-                            className={`h-full bg-white/20 ${Math.random() > 0.5 ? "w-1" : "w-2"}`}
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Garis Animasi Scanning */}
-                    <motion.div
-                      animate={{ top: ["0%", "100%", "0%"] }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="absolute left-0 w-full h-1 bg-cyan-400/30 shadow-[0_0_10px_#06b6d4] z-20 pointer-events-none"
-                    ></motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              {highlights.map((item) => (
+                <div key={item.num} className="flex items-start gap-3.5 group">
+                  <span className="text-xs font-mono font-bold text-neutral-500 group-hover:text-white transition-colors">
+                    ^{item.num}
+                  </span>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-bold text-white tracking-wide uppercase font-mono mb-0.5">
+                      {item.title}
+                    </h3>
+                    <p className="text-[11px] text-neutral-400 leading-normal">
+                      {item.desc}
+                    </p>
                   </div>
-
-                  {/* Badge "Available" di Luar Kad */}
-                  <motion.div
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute -right-4 md:-right-6 bottom-16 bg-[#0a0f1d] border border-cyan-500/50 px-3 md:px-4 py-1.5 md:py-2 rounded-xl shadow-xl z-30"
-                    style={{ transform: "translateZ(50px) rotate(5deg)" }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="relative flex h-2 w-2 md:h-3 md:w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 md:h-3 md:w-3 bg-green-500"></span>
-                      </span>
-                      <p className="text-[8px] md:text-[10px] font-black text-white uppercase tracking-widest">
-                        Available
-                      </p>
-                    </div>
-                  </motion.div>
-                </TiltCard>
-              </div>
+                </div>
+              ))}
             </div>
-          </div>
-        </div>
+          </motion.div>
+
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 }

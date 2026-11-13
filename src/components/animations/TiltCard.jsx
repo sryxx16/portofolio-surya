@@ -1,20 +1,20 @@
 import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-export default function TiltCard({ children }) {
+export default function TiltCard({ children, maxTilt = 8, translateZ = 20 }) {
   const ref = useRef(null);
 
   // Nilai pergerakan mouse
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Bikin pergerakannya memantul halus (spring)
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+  // Gerakan memantul halus (spring) yang responsif
+  const mouseXSpring = useSpring(x, { stiffness: 260, damping: 25 });
+  const mouseYSpring = useSpring(y, { stiffness: 260, damping: 25 });
 
-  // Mengubah posisi mouse menjadi rotasi derajat (maksimal 15 derajat)
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+  // Derajat rotasi yang subtle & elegan (tidak terlalu ekstrem)
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [`${maxTilt}deg`, `-${maxTilt}deg`]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [`-${maxTilt}deg`, `${maxTilt}deg`]);
 
   const handleMouseMove = (e) => {
     if (!ref.current) return;
@@ -22,7 +22,6 @@ export default function TiltCard({ children }) {
     const width = rect.width;
     const height = rect.height;
 
-    // Kalkulasi posisi mouse relatif terhadap tengah elemen
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
@@ -34,7 +33,6 @@ export default function TiltCard({ children }) {
   };
 
   const handleMouseLeave = () => {
-    // Kembalikan ke posisi awal saat mouse pergi
     x.set(0);
     y.set(0);
   };
@@ -48,12 +46,12 @@ export default function TiltCard({ children }) {
         rotateY,
         rotateX,
         transformStyle: "preserve-3d",
+        perspective: 1000,
       }}
-      className="relative w-full h-full flex items-center justify-center cursor-pointer"
+      className="relative w-full h-full flex items-center justify-center"
     >
-      {/* translateZ(50px) ini yang bikin isinya seolah-olah melayang keluar dari background */}
       <div
-        style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}
+        style={{ transform: `translateZ(${translateZ}px)`, transformStyle: "preserve-3d" }}
         className="w-full h-full"
       >
         {children}

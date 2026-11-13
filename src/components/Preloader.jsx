@@ -2,65 +2,82 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Preloader() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [count, setCount] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
 
-  // Set loading bertahan selama 2.5 detik sebelum hilang
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
+    const duration = 1200; // 1.2s smooth counter
+    const stepTime = 15;
+    const totalSteps = duration / stepTime;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = Math.min(Math.round((currentStep / totalSteps) * 100), 100);
+      setCount(progress);
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => setIsFinished(true), 200);
+      }
+    }, stepTime);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <AnimatePresence>
-      {isLoading && (
+      {!isFinished && (
         <motion.div
           key="preloader"
-          // Efek ngilang: perlahan transparan dan naik ke atas
-          exit={{ opacity: 0, y: -50 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="fixed inset-0 z-[9999] bg-[#060913] flex flex-col items-center justify-center"
+          initial={{ y: 0 }}
+          exit={{
+            y: "-100%",
+            transition: { duration: 0.8, ease: [0.77, 0, 0.175, 1] },
+          }}
+          className="fixed inset-0 z-[9999] bg-[#09090b] flex flex-col justify-between p-8 md:p-14 select-none"
         >
-          <div className="flex flex-col items-center">
-            {/* Teks Logo Berkedip */}
-            <motion.h1
-              animate={{
-                opacity: [0.5, 1, 0.5],
-                textShadow: [
-                  "0px 0px 0px #06b6d4",
-                  "0px 0px 20px #06b6d4",
-                  "0px 0px 0px #06b6d4",
-                ],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 tracking-tighter mb-4"
-            >
-              SURYA<span className="text-white">.</span>
-            </motion.h1>
+          {/* Top meta */}
+          <div className="flex items-center justify-between text-xs font-mono uppercase tracking-widest text-neutral-500">
+            <span className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+              SURYA DAFFA
+            </span>
+            <span>PORTFOLIO © 2026</span>
+          </div>
 
-            {/* Progress Bar Loading */}
-            <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+          {/* Center: Big Clean Counter & Label */}
+          <div className="flex flex-col items-center justify-center my-auto">
+            <div className="overflow-hidden">
               <motion.div
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-                className="h-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.8)]"
-              />
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-7xl sm:text-8xl md:text-9xl font-black font-mono tracking-tighter text-white"
+              >
+                {count < 10 ? `0${count}` : count}
+                <span className="text-neutral-500 text-4xl sm:text-5xl font-light ml-1">%</span>
+              </motion.div>
             </div>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-cyan-400/50 text-xs font-bold tracking-[0.3em] mt-4 uppercase"
-            >
-              Initiating...
-            </motion.p>
+            <p className="mt-4 text-xs font-mono tracking-[0.3em] uppercase text-neutral-400">
+              Frontend Specialist & Web Developer
+            </p>
+
+            {/* Minimal Progress Line */}
+            <div className="w-48 sm:w-64 h-[2px] bg-neutral-800 rounded-full mt-6 overflow-hidden">
+              <motion.div
+                className="h-full bg-white rounded-full"
+                style={{ width: `${count}%` }}
+                transition={{ ease: "linear" }}
+              />
+            </div>
+          </div>
+
+          {/* Bottom meta */}
+          <div className="flex items-center justify-between text-xs font-mono uppercase tracking-widest text-neutral-500">
+            <span>MODERN WEB ARCHITECTURE</span>
+            <span className="hidden sm:inline">JAKARTA / BOGOR, ID</span>
           </div>
         </motion.div>
       )}
