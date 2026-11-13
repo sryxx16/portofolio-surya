@@ -6,7 +6,7 @@ export const portfolioData = {
   about:
     "Saya adalah mahasiswa S1 Teknologi Informasi Semester 7 di Universitas Bina Sarana Informatika (UBSI) yang berfokus mendalam pada Modern Web Development dan arsitektur Frontend. Berpengalaman memimpin implementasi UI responsif, arsitektur microservice (NestJS & Next.js), serta perancangan database relasional (PostgreSQL & MySQL). Memiliki rekam jejak nyata mulai dari platform e-commerce klien live hingga platform peraih Juara 3 IT Bootcamp & HKI.",
 
-  profileImage1: "/assets/images/fotoprojects/fotoprofile3_cutout.png",
+  profileImage1: "/assets/images/fotoprojects/fotoprofile_bw_clean.png",
   profileImage: "/assets/images/fotoprojects/fotoprofile2.png",
   avatarArt: "/assets/images/fotoprojects/fotoprofile3.png",
   resumeUrl: "/CV Surya Daffa Fauzi Khoerudin.pdf",
