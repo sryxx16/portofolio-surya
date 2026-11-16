@@ -12,7 +12,7 @@ export default function Timeline() {
       icon: "bi-mortarboard-fill",
     },
     {
-      year: "Agustus - Oktober 2025",
+      year: "Agustus - Oktober 2026",
       title: "Pranata Komputer (Prakom) – Magang",
       company: "Kementerian Agama (Kemenag) Kota Depok",
       description:

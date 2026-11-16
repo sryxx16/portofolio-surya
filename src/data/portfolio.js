@@ -301,6 +301,16 @@ export const portfolioData = {
   certificates: [
     {
       id: 1,
+      title: "Sertifikat Magang Pranata Komputer (Prakom)",
+      issuer: "Kementerian Agama Kota Depok",
+      year: "2026",
+      description:
+        "Sertifikat resmi atas penyelesaian kegiatan magang sebagai Pranata Komputer (Prakom) pada Kantor Kementerian Agama Kota Depok (Nomor: 6/KK.10.22/1/KP.08.8/Sert/10/2026). Diterbitkan dan ditandatangani secara sah menggunakan sertifikat elektronik BSrE BSSN.",
+      image: "/assets/images/sertif/sertifikat-kemenag.jpg",
+      type: "single",
+    },
+    {
+      id: 2,
       title: "Sertifikat HKI Web Jasa Titip",
       issuer: "IT Bootcamp UBSI",
       year: "2025",
@@ -315,7 +325,7 @@ export const portfolioData = {
       type: "carousel",
     },
     {
-      id: 2,
+      id: 3,
       title: "PCAP : Programing Essentials in Python",
       issuer: "CISCO",
       year: "2024",
@@ -325,7 +335,7 @@ export const portfolioData = {
       type: "single",
     },
     {
-      id: 3,
+      id: 4,
       title: "Fundamental Front-End Web",
       issuer: "Coding Studio",
       year: "2024",
@@ -335,7 +345,7 @@ export const portfolioData = {
       type: "single",
     },
     {
-      id: 4,
+      id: 5,
       title: "IT Bootcamp Software Dev",
       issuer: "IT Bootcamp UBSI",
       year: "2025",
