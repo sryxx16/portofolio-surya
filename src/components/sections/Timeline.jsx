@@ -12,6 +12,14 @@ export default function Timeline() {
       icon: "bi-mortarboard-fill",
     },
     {
+      year: "Agustus - Oktober 2025",
+      title: "Pranata Komputer (Prakom) – Magang",
+      company: "Kementerian Agama (Kemenag) Kota Depok",
+      description:
+        "Menjalani program magang selama 3 bulan sebagai Pranata Komputer (Prakom). Bertanggung jawab atas pengelolaan dan pemeliharaan sistem informasi, optimalisasi infrastruktur jaringan & perangkat komputer kantor, serta digitalisasi administrasi layanan publik di lingkungan Kemenag Kota Depok.",
+      icon: "bi-pc-display-horizontal",
+    },
+    {
       year: "2025",
       title: "Juara 3 – IT Bootcamp Software Development for Industry",
       company: "Universitas Bina Sarana Informatika (UBSI)",
